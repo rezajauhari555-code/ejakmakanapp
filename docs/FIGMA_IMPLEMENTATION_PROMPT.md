@@ -84,3 +84,48 @@ Di akhir pekerjaan, berikan:
 7. Langkah menjalankan aplikasi di iOS dan Android.
 
 Kerjakan perubahan pada branch `feat/figma-ejakmakan`. Jangan push langsung ke `main`, jangan merge, dan jangan memasukkan secret ke repository. Buat Pull Request untuk ditinjau setelah implementasi dan pemeriksaan selesai.
+
+## Integrasi WhatsApp Business API
+
+Tambahkan integrasi WhatsApp sebagai fitur pendukung Ejakmakan. Gunakan **WhatsApp Business Platform Cloud API resmi dari Meta** melalui backend Node.js. Jangan menggunakan library tidak resmi, WhatsApp Web automation, scraping, atau metode yang berisiko membuat nomor diblokir.
+
+### Kebutuhan fitur
+- Sediakan tombol **Hubungi melalui WhatsApp** pada lokasi yang sesuai dengan desain, misalnya halaman profil/bantuan atau detail restoran jika memang ada pada desain.
+- Tombol dapat membuka percakapan WhatsApp dengan nomor bisnis yang sudah dikonfigurasi menggunakan deep link `https://wa.me/<nomor>`. Nomor harus berasal dari konfigurasi resmi bisnis, bukan nomor rekaan.
+- Jika kebutuhan bisnis mencakup notifikasi, siapkan layanan backend untuk mengirim pesan transaksional melalui WhatsApp Cloud API, misalnya konfirmasi registrasi, pembaruan status pesanan, atau informasi layanan. Aktifkan hanya untuk alur yang benar-benar didukung aplikasi dan backend.
+- Jika diperlukan OTP melalui WhatsApp, perlakukan sebagai fitur terpisah: gunakan template autentikasi yang disetujui Meta dan mekanisme verifikasi yang aman. Jangan menganggap WhatsApp OTP sudah tersedia hanya karena Cloud API terhubung.
+- Tampilkan status pengiriman yang akurat: queued/sent/delivered/read/failed hanya jika status tersebut benar-benar diterima dari API atau webhook. Jangan menampilkan pesan sukses sebelum API mengonfirmasi penerimaan.
+
+### Implementasi backend
+- Buat service terpisah, misalnya `backend/src/services/whatsappService.js`, untuk mengelola request ke WhatsApp Cloud API.
+- Tambahkan endpoint backend sesuai kebutuhan, misalnya endpoint internal untuk memicu notifikasi dan endpoint webhook untuk menerima status pesan.
+- Verifikasi webhook Meta menggunakan mekanisme challenge dan signature sesuai dokumentasi resmi.
+- Validasi nomor tujuan, isi pesan, template, dan konteks pengiriman di backend.
+- Gunakan template message yang telah disetujui Meta ketika diwajibkan oleh aturan WhatsApp, khususnya untuk pesan yang dimulai oleh bisnis di luar customer service window.
+- Hormati persetujuan/opt-in pengguna, preferensi notifikasi, permintaan berhenti, serta kebijakan WhatsApp Business. Jangan mengirim pesan promosi massal atau pesan yang tidak diminta.
+- Terapkan rate limiting, logging tanpa membocorkan isi sensitif, penanganan retry yang aman, dan idempotency agar webhook atau retry tidak mengirim duplikat.
+- Jangan menaruh token akses, App Secret, Verify Token, atau credential Meta di frontend maupun repository.
+
+### Environment variables
+Tambahkan contoh variabel berikut ke `.env.example` backend jika diperlukan:
+- `WHATSAPP_ACCESS_TOKEN=`
+- `WHATSAPP_PHONE_NUMBER_ID=`
+- `WHATSAPP_BUSINESS_ACCOUNT_ID=`
+- `WHATSAPP_VERIFY_TOKEN=`
+- `WHATSAPP_APP_SECRET=`
+- `WHATSAPP_API_VERSION=`
+
+Gunakan versi Graph API yang masih didukung dan dokumentasikan cara memperoleh serta mengatur kredensial melalui Meta. Jangan mengisi nilai rahasia dengan data contoh yang tampak seperti credential sungguhan.
+
+### Frontend
+- Tambahkan tombol WhatsApp hanya pada layar dan alur yang sesuai dengan desain Figma.
+- Untuk tombol chat langsung, gunakan deep link WhatsApp dan tampilkan fallback jika WhatsApp tidak terpasang atau link tidak dapat dibuka.
+- Untuk notifikasi otomatis, frontend hanya memanggil backend aplikasi; jangan memanggil Meta Cloud API langsung dari aplikasi mobile.
+- Jangan meminta atau menyimpan nomor WhatsApp pengguna jika tidak diperlukan. Jika nomor diperlukan, jelaskan tujuan dan minta persetujuan pengguna.
+
+### Pengujian dan dokumentasi
+- Dokumentasikan setup Meta Developer App, WhatsApp Business Account, nomor bisnis, webhook, template message, dan environment variables.
+- Uji webhook verification, signature validation, pesan sukses, pesan gagal, retry, idempotency, opt-in, serta fallback deep link.
+- Sediakan mode development/mock yang jelas terpisah dari production; jangan mengirim pesan nyata selama pengujian tanpa persetujuan dan nomor uji yang sesuai.
+- Catat biaya, batas penggunaan, dan prasyarat akun WhatsApp Business berdasarkan dokumentasi resmi Meta yang berlaku.
+
