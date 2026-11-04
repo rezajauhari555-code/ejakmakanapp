@@ -1,576 +1,215 @@
-# 🛍️ UMKM Mart — Mobile E-Commerce UMKM Indonesia
+# Ejakmakan
 
-**UMKM Mart** adalah aplikasi mobile e-commerce yang dirancang untuk membantu pelaku Usaha Mikro, Kecil, dan Menengah (UMKM) memasarkan produk mereka secara digital.
+Aplikasi mobile untuk menemukan makanan favorit dengan React Native + Expo dan REST API Node.js + Express.
 
-Aplikasi ini memungkinkan pelanggan melihat produk, mencari barang, memasukkan produk ke keranjang, dan membuat pesanan. Backend menyediakan REST API untuk autentikasi, pengelolaan produk, dan pemrosesan pesanan.
+Repository: https://github.com/rezajauhari555-code/ejakmakanapp
 
-Proyek ini dikembangkan menggunakan React Native untuk frontend mobile, Node.js dan Express.js untuk backend, serta MySQL dari XAMPP sebagai database.
+## Status
 
-## 📌 Daftar Isi
+Fondasi project sudah tersedia:
 
-- [Tentang Proyek](#-tentang-proyek)
-- [Tujuan](#-tujuan)
-- [Fitur](#-fitur)
-- [Teknologi](#-teknologi)
-- [Arsitektur Sistem](#-arsitektur-sistem)
-- [Struktur Folder](#-struktur-folder)
-- [Persyaratan Sistem](#-persyaratan-sistem)
-- [Instalasi Database](#-instalasi-database)
-- [Menjalankan Backend](#-menjalankan-backend)
-- [Pengujian API dengan Postman](#-pengujian-api-dengan-postman)
-- [Menjalankan Frontend](#-menjalankan-frontend)
-- [Endpoint API](#-endpoint-api)
-- [Keamanan](#-keamanan)
-- [Pengembangan Selanjutnya](#-pengembangan-selanjutnya)
-- [Kontribusi](#-kontribusi)
-- [Lisensi](#-lisensi)
+- Layar login mobile dengan tombol Google dan Apple.
+- Backend Express dengan endpoint health check.
+- Verifikasi token Google dan Apple di backend.
+- JWT aplikasi setelah token provider berhasil diverifikasi.
+- Konfigurasi aplikasi iOS dan Android.
 
-## 📖 Tentang Proyek
+Fitur produk, keranjang, pesanan, database, dan akun email belum diimplementasikan.
 
-UMKM Mart merupakan proyek pengembangan sistem informasi e-commerce berbasis mobile yang berfokus pada digitalisasi penjualan produk UMKM Indonesia.
+## Teknologi
 
-Aplikasi ini dirancang dengan memisahkan frontend dan backend agar pengembangan, pengujian, serta pemeliharaan sistem menjadi lebih terstruktur.
+- React Native 0.88 dan Expo SDK 58.
+- TypeScript untuk aplikasi mobile.
+- Node.js dan Express 5 untuk backend.
+- `google-auth-library` untuk verifikasi token Google.
+- `apple-signin-auth` untuk verifikasi token Apple.
+- JSON Web Token untuk sesi aplikasi.
+- `zod`, Helmet, CORS, dan dotenv.
 
-Frontend berfungsi sebagai antarmuka pengguna, sedangkan backend menangani autentikasi, logika bisnis, validasi, dan komunikasi dengan database.
-
-## 🎯 Tujuan
-
-1. Membantu UMKM memperluas jangkauan pemasaran produk.
-2. Menyediakan pengalaman belanja yang praktis melalui perangkat mobile.
-3. Memudahkan pelanggan mencari dan memilih produk.
-4. Mengimplementasikan autentikasi pengguna yang aman.
-5. Mengelola data produk dan pesanan menggunakan MySQL.
-6. Memisahkan frontend dan backend untuk mempermudah pengembangan.
-7. Menguji REST API menggunakan Postman sebelum integrasi dengan frontend.
-
-## ✨ Fitur
-
-### 👤 Fitur Pelanggan
-
-- Registrasi akun.
-- Login dan autentikasi JWT.
-- Melihat daftar produk UMKM.
-- Melihat detail produk.
-- Mencari produk.
-- Memilih kategori produk.
-- Menambahkan produk ke keranjang.
-- Mengatur jumlah produk.
-- Membuat pesanan.
-- Melihat riwayat pesanan.
-- Melihat profil pengguna.
-
-### 🛠️ Fitur Admin
-
-- Mengelola data produk.
-- Menambahkan produk baru.
-- Memperbarui informasi produk.
-- Menghapus produk.
-- Mengelola stok produk.
-- Mengakses fungsi administrasi sesuai hak akses.
-
-### 🔐 Fitur Keamanan
-
-- Password di-hash menggunakan bcrypt.
-- Autentikasi menggunakan JSON Web Token (JWT).
-- Middleware untuk memverifikasi token.
-- Pembatasan akses berdasarkan peran pengguna.
-- Validasi input pada backend.
-- Query database menggunakan parameter untuk mengurangi risiko SQL injection.
-- Validasi harga dan stok pada proses pemesanan.
-
-> **Catatan:** Fitur di atas merupakan target pengembangan proyek. Status implementasi setiap fitur perlu disesuaikan dengan kode yang benar-benar tersedia di repository.
-
-## 🧰 Teknologi
-
-| Teknologi | Fungsi |
-|---|---|
-| React Native | Pengembangan antarmuka aplikasi mobile |
-| Expo | Menjalankan dan mengembangkan aplikasi React Native |
-| TypeScript | Penulisan kode frontend dengan tipe data |
-| Node.js | Runtime JavaScript untuk backend |
-| Express.js | Framework REST API |
-| MySQL | Database relasional |
-| XAMPP | Lingkungan pengembangan database lokal |
-| phpMyAdmin | Pengelolaan database melalui browser |
-| MySQL2 | Koneksi backend ke MySQL |
-| bcryptjs | Hashing dan verifikasi password |
-| JSON Web Token | Autentikasi berbasis token |
-| dotenv | Pengelolaan konfigurasi environment |
-| Postman | Pengujian endpoint API |
-| Git | Version control |
-| GitHub | Penyimpanan repository dan kolaborasi |
-
-## 🏗️ Arsitektur Sistem
+## Struktur Project
 
 ```text
-+--------------------------------+
-|       MOBILE FRONTEND          |
-|     React Native + Expo        |
-+--------------------------------+
-                |
-                | HTTP Request
-                | JSON Response
-                v
-+--------------------------------+
-|          BACKEND API           |
-|       Node.js + Express        |
-|                                |
-| - Authentication               |
-| - Product Management           |
-| - Order Management             |
-| - JWT Middleware               |
-| - Role Authorization           |
-+--------------------------------+
-                |
-                | SQL Queries
-                v
-+--------------------------------+
-|          MYSQL DATABASE        |
-|          XAMPP MySQL           |
-|                                |
-| - users                        |
-| - categories                   |
-| - products                     |
-| - orders                       |
-| - order_items                  |
-+--------------------------------+
-
-+--------------------------------+
-|            POSTMAN             |
-|       REST API Testing         |
-+--------------------------------+
-                |
-                v
-         BACKEND API
-```
-
-Frontend dan backend dikembangkan secara terpisah. Postman digunakan untuk menguji backend sebelum API diintegrasikan dengan aplikasi mobile.
-
-## 📂 Struktur Folder
-
-Struktur proyek yang direncanakan:
-
-```text
-UMKM-Mart/
-│
+ejakmakanapp/
 ├── backend/
 │   ├── src/
-│   │   ├── config/
-│   │   │   └── database.js
-│   │   │
-│   │   ├── controllers/
-│   │   │   ├── authController.js
-│   │   │   ├── productController.js
-│   │   │   └── orderController.js
-│   │   │
-│   │   ├── middleware/
-│   │   │   ├── authMiddleware.js
-│   │   │   └── roleMiddleware.js
-│   │   │
-│   │   ├── routes/
-│   │   │   ├── authRoutes.js
-│   │   │   ├── productRoutes.js
-│   │   │   └── orderRoutes.js
-│   │   │
+│   │   ├── services/providerAuth.js
 │   │   ├── app.js
 │   │   └── server.js
-│   │
-│   ├── database/
-│   │   └── umkm_mart.sql
-│   │
 │   ├── .env.example
 │   └── package.json
-│
 ├── frontend/
-│   ├── app/
-│   ├── components/
-│   ├── services/
-│   ├── types/
-│   ├── assets/
+│   ├── App.tsx
+│   ├── app.json
 │   └── package.json
-│
 ├── .gitignore
 └── README.md
 ```
 
-Struktur aktual dapat berbeda sesuai implementasi dan konfigurasi Expo yang digunakan.
+## Persyaratan
 
-## 💻 Persyaratan Sistem
+- Node.js versi LTS.
+- npm.
+- Git.
+- Expo Go pada iPhone untuk testing melalui jaringan lokal.
+- Xcode hanya diperlukan untuk iOS Simulator atau build native lokal, dan Xcode hanya tersedia di macOS.
 
-Sebelum menjalankan proyek, siapkan:
+## Menjalankan Backend
 
-- [Node.js](https://nodejs.org/)
-- [Visual Studio Code](https://code.visualstudio.com/)
-- [XAMPP](https://www.apachefriends.org/)
-- [Postman](https://www.postman.com/)
-- [Git](https://git-scm.com/)
-- [Expo](https://docs.expo.dev/)
+Masuk ke folder backend dan pasang dependency:
 
-Disarankan menggunakan versi Node.js LTS yang kompatibel dengan dependensi proyek.
-
-## 🗄️ Instalasi Database
-
-### 1. Jalankan XAMPP
-
-Buka XAMPP Control Panel.
-
-Aktifkan:
-
-- MySQL
-- Apache, jika diperlukan untuk mengakses phpMyAdmin melalui instalasi XAMPP.
-
-### 2. Buka phpMyAdmin
-
-Akses:
-
-```text
-http://localhost/phpmyadmin
-```
-
-### 3. Buat database
-
-Buat database dengan nama:
-
-```sql
-CREATE DATABASE umkm_mart;
-```
-
-Pilih database `umkm_mart`, kemudian impor file SQL:
-
-```text
-backend/database/umkm_mart.sql
-```
-
-File SQL harus berisi definisi tabel, foreign key, dan data contoh yang sesuai dengan implementasi backend.
-
-## ⚙️ Menjalankan Backend
-
-### 1. Masuk ke folder backend
-
-Buka terminal di Visual Studio Code:
-
-```bash
+```powershell
 cd backend
-```
-
-### 2. Instal dependensi
-
-```bash
 npm install
 ```
 
-Pastikan `package.json` sudah mendefinisikan script untuk menjalankan server.
+Salin konfigurasi contoh:
 
-Contoh:
-
-```json
-{
-  "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
-  }
-}
+```powershell
+Copy-Item .env.example .env
 ```
 
-Jika `nodemon` belum tersedia, instal sebagai dependensi pengembangan:
-
-```bash
-npm install --save-dev nodemon
-```
-
-### 3. Konfigurasi environment
-
-Buat file `.env` di dalam folder `backend`.
-
-Contoh konfigurasi lokal:
+Isi `.env` dengan credential OAuth Anda. Jangan commit file `.env`.
 
 ```env
 PORT=5000
-
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=umkm_mart
-
-JWT_SECRET=GANTI_DENGAN_SECRET_ACAK_YANG_KUAT
-JWT_EXPIRES_IN=1h
+JWT_SECRET=ganti-dengan-secret-acak-yang-panjang
+JWT_EXPIRES_IN=7d
+GOOGLE_CLIENT_ID=your-google-web-client-id.apps.googleusercontent.com
+APPLE_CLIENT_ID=com.rezajauhari.ejakmakan
+APPLE_TEAM_ID=your-apple-team-id
+APPLE_KEY_ID=your-apple-key-id
+APPLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nreplace-me\n-----END PRIVATE KEY-----"
 ```
 
-Sesuaikan konfigurasi dengan instalasi MySQL di komputer masing-masing.
+Jalankan server:
 
-Jangan mengunggah file `.env` yang berisi password database atau secret ke GitHub.
-
-### 4. Jalankan server
-
-```bash
+```powershell
 npm run dev
 ```
 
-Jika server berjalan dengan benar, API dapat diakses melalui:
+API berjalan pada `http://localhost:5000`.
 
-```text
-http://localhost:5000
+## Endpoint Auth
+
+### Health check
+
+```http
+GET /api/health
 ```
 
-Contoh endpoint pemeriksaan server:
-
-```text
-GET http://localhost:5000/api/health
-```
-
-Endpoint tersebut harus dibuat di backend agar dapat digunakan.
-
-## 🧪 Pengujian API dengan Postman
-
-Backend diuji menggunakan Postman sebelum diintegrasikan dengan frontend.
-
-### 1. Registrasi pengguna
-
-**Method:** `POST`
-
-```text
-http://localhost:5000/api/auth/register
-```
-
-Body → raw → JSON:
+Response:
 
 ```json
 {
-  "name": "Pengguna UMKM",
-  "email": "pengguna@example.com",
-  "password": "ContohPasswordAman123!"
+  "status": "ok",
+  "service": "ejakmakan-api"
 }
 ```
 
-### 2. Login pengguna
-
-**Method:** `POST`
-
-```text
-http://localhost:5000/api/auth/login
-```
-
-Body → raw → JSON:
-
-```json
-{
-  "email": "pengguna@example.com",
-  "password": "ContohPasswordAman123!"
-}
-```
-
-Jika berhasil, backend mengembalikan token JWT sesuai format respons yang diterapkan.
-
-### 3. Memeriksa identitas pengguna
-
-**Method:** `GET`
-
-```text
-http://localhost:5000/api/auth/me
-```
-
-Header:
+### Login Google
 
 ```http
-Authorization: Bearer TOKEN_JWT
-```
-
-Ganti `TOKEN_JWT` dengan token yang diperoleh dari proses login.
-
-### 4. Melihat produk
-
-**Method:** `GET`
-
-```text
-http://localhost:5000/api/products
-```
-
-Endpoint ini digunakan untuk mengambil daftar produk.
-
-### 5. Melihat detail produk
-
-**Method:** `GET`
-
-```text
-http://localhost:5000/api/products/1
-```
-
-Angka `1` merupakan contoh ID produk.
-
-### 6. Membuat pesanan
-
-**Method:** `POST`
-
-```text
-http://localhost:5000/api/orders
-```
-
-Header:
-
-```http
-Authorization: Bearer TOKEN_JWT
+POST /api/auth/google
 Content-Type: application/json
 ```
 
-Contoh body, jika format tersebut didukung backend:
-
 ```json
 {
-  "shipping_address": "Alamat pengiriman contoh",
-  "items": [
-    {
-      "product_id": 1,
-      "quantity": 2
-    }
-  ]
+  "token": "GOOGLE_ID_TOKEN_DARI_MOBILE"
 }
 ```
 
-Backend harus menghitung harga berdasarkan data database, memvalidasi stok, dan menggunakan transaksi database untuk membuat pesanan.
-
-### 7. Melihat riwayat pesanan
-
-**Method:** `GET`
-
-```text
-http://localhost:5000/api/orders/my
-```
-
-Header:
+### Login Apple
 
 ```http
-Authorization: Bearer TOKEN_JWT
+POST /api/auth/apple
+Content-Type: application/json
 ```
 
-Pastikan endpoint pesanan hanya mengembalikan pesanan milik pengguna yang sedang login.
+```json
+{
+  "token": "APPLE_ID_TOKEN_DARI_MOBILE"
+}
+```
 
-> Format request dan response di atas merupakan contoh kontrak API. Sesuaikan dengan implementasi backend yang sebenarnya.
+Backend memverifikasi token provider, kemudian mengembalikan JWT aplikasi dan data user. Jangan mengirim access token palsu atau credential rahasia dari aplikasi mobile.
 
-## 📱 Menjalankan Frontend
+## Menjalankan Frontend
 
-### 1. Masuk ke folder frontend
+Masuk ke folder frontend dan pasang dependency:
 
-Buka terminal baru:
-
-```bash
+```powershell
 cd frontend
-```
-
-### 2. Instal dependensi
-
-```bash
 npm install
 ```
 
-### 3. Jalankan Expo
+Atur URL API melalui environment Expo. Untuk Android Emulator gunakan `10.0.2.2`; untuk iPhone fisik gunakan alamat IP komputer di jaringan lokal.
 
-```bash
+```powershell
+$env:EXPO_PUBLIC_API_URL = "http://192.168.1.10:5000"
 npx expo start
 ```
 
-Ikuti petunjuk Expo untuk membuka aplikasi melalui perangkat yang kompatibel atau emulator Android.
+Ganti `192.168.1.10` dengan alamat IP komputer Anda. `localhost` pada iPhone menunjuk ke iPhone, bukan ke komputer.
 
-### 4. Konfigurasi alamat API
+### Testing di iPhone dari Windows
 
-Frontend harus menggunakan alamat backend yang dapat dijangkau dari perangkat.
+1. Install Expo Go dari App Store.
+2. Pastikan iPhone dan komputer tersambung ke Wi-Fi yang sama.
+3. Jalankan `npx expo start --lan` dari folder `frontend`.
+4. Scan QR code dari Expo Go atau kamera iPhone.
 
-Contoh untuk Android Emulator standar:
+Windows tidak dapat menjalankan iOS Simulator. Untuk iOS Simulator gunakan macOS + Xcode. Untuk build iOS dari Windows, gunakan EAS Build setelah menyiapkan akun Expo dan Apple Developer.
 
-```text
-http://10.0.2.2:5000
+## Identitas Aplikasi
+
+Konfigurasi di `frontend/app.json`:
+
+- Nama: `Ejakmakan`.
+- Slug: `ejakmakan`.
+- iOS Bundle ID: `com.rezajauhari.ejakmakan`.
+- Android package: `com.rezajauhari.ejakmakan`.
+- Versi: `1.0.0`.
+
+## Styling Mobile
+
+Frontend menggunakan `StyleSheet` bawaan React Native, bukan CSS web. Pendekatan ini dipilih karena ringan dan sesuai dengan komponen native. NativeWind dapat ditambahkan kemudian jika project membutuhkan workflow utility class seperti Tailwind CSS.
+
+## Validasi
+
+Typecheck frontend:
+
+```powershell
+cd frontend
+npx tsc --noEmit
 ```
 
-Contoh untuk perangkat fisik dalam jaringan lokal:
+Syntax check backend:
 
-```text
-http://192.168.1.10:5000
+```powershell
+cd backend
+node --check src/app.js
+node --check src/services/providerAuth.js
+node --check src/server.js
 ```
 
-Ganti alamat IP tersebut dengan alamat komputer yang menjalankan backend.
+## Keamanan
 
-`localhost` pada HP menunjuk ke HP itu sendiri, bukan otomatis ke komputer.
+- Jangan commit `.env`, private key Apple, client secret, atau JWT secret.
+- Validasi token Google dan Apple selalu dilakukan di backend.
+- Gunakan HTTPS untuk environment production.
+- Ganti `JWT_SECRET` dengan nilai acak yang panjang.
+- Credential Google Cloud, Apple Developer, dan Expo harus dibuat oleh pemilik akun masing-masing.
 
-Pastikan backend mendengarkan pada alamat jaringan yang sesuai dan firewall mengizinkan koneksi yang diperlukan.
+## Git
 
-Untuk deployment, gunakan HTTPS dan konfigurasi jaringan yang aman.
+```powershell
+git status
+git add .
+git commit -m "Describe Ejakmakan project setup"
+git push origin main
+```
 
-## 🔌 Endpoint API
+## Lisensi
 
-Daftar endpoint yang direncanakan:
-
-| Method | Endpoint | Fungsi | Akses |
-|---|---|---|---|
-| GET | `/api/health` | Memeriksa status server | Publik |
-| POST | `/api/auth/register` | Registrasi pengguna | Publik |
-| POST | `/api/auth/login` | Login pengguna | Publik |
-| GET | `/api/auth/me` | Informasi pengguna aktif | Pengguna login |
-| GET | `/api/products` | Daftar produk | Publik |
-| GET | `/api/products/:id` | Detail produk | Publik |
-| POST | `/api/products` | Menambah produk | Admin |
-| PUT | `/api/products/:id` | Mengubah produk | Admin |
-| DELETE | `/api/products/:id` | Menghapus produk | Admin |
-| POST | `/api/orders` | Membuat pesanan | Pelanggan login |
-| GET | `/api/orders/my` | Riwayat pesanan sendiri | Pelanggan login |
-| GET | `/api/orders/:id` | Detail pesanan dengan pemeriksaan kepemilikan | Pengguna berwenang |
-
-Akses aktual harus ditentukan oleh middleware backend, bukan hanya oleh tampilan frontend.
-
-## 🔐 Keamanan
-
-Beberapa prinsip keamanan yang diterapkan dalam pengembangan:
-
-1. Password tidak disimpan dalam bentuk teks biasa.
-2. Password di-hash menggunakan bcryptjs.
-3. JWT diverifikasi oleh middleware backend.
-4. Endpoint administratif hanya dapat digunakan oleh admin yang terautentikasi.
-5. Input pengguna divalidasi di backend.
-6. Query database menggunakan parameterized queries.
-7. Harga produk dihitung dari database, bukan dipercaya dari frontend.
-8. Stok divalidasi sebelum pesanan diproses.
-9. Proses pembuatan pesanan dan pengurangan stok menggunakan transaksi database.
-10. Secret dan kredensial tidak disimpan di repository publik.
-11. Endpoint autentikasi perlu dilengkapi pembatasan percobaan login dan perlindungan yang sesuai.
-12. Token disimpan menggunakan penyimpanan aman pada perangkat mobile.
-
-Untuk penggunaan produksi, gunakan konfigurasi database dengan hak akses terbatas, HTTPS, pengelolaan secret yang benar, serta kebijakan akses database yang sesuai.
-
-## 🚀 Pengembangan Selanjutnya
-
-Fitur yang dapat dikembangkan:
-
-- Integrasi pembayaran melalui payment gateway.
-- Upload gambar produk.
-- Dashboard admin berbasis web.
-- Notifikasi pesanan.
-- Pencarian dan filter produk yang lebih lengkap.
-- Pengelolaan alamat pengiriman.
-- Pengelolaan status pesanan.
-- Laporan penjualan untuk UMKM.
-- Pengujian otomatis backend.
-- Deployment backend dan database ke server produksi.
-
-Pembayaran online tidak dianggap aktif sampai integrasi, konfigurasi, dan pengujian payment gateway selesai.
-
-## 🤝 Kontribusi
-
-Kontribusi untuk pengembangan proyek ini dapat dilakukan melalui:
-
-1. Fork repository.
-2. Buat branch baru.
-3. Lakukan perubahan kode.
-4. Jalankan pengujian.
-5. Buat Pull Request.
-
-Pastikan perubahan tidak memasukkan kredensial atau data pribadi ke repository.
-
-## 📄 Lisensi
-
-Lisensi proyek belum ditentukan.
-
-Tambahkan file `LICENSE` jika proyek akan dibagikan atau digunakan oleh pihak lain. Pilih lisensi yang sesuai dengan tujuan distribusi dan penggunaan proyek.
-
----
-
-**UMKM Mart**   
-Digitalisasi UMKM Indonesia melalui teknologi mobile dan web.
+Lisensi project belum ditentukan.
