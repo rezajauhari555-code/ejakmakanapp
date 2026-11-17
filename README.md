@@ -1,215 +1,216 @@
-# Ejakmakan
+# 🍽️ Ejakmakan
 
-Aplikasi mobile untuk menemukan makanan favorit dengan React Native + Expo dan REST API Node.js + Express.
+**Ejakmakan** adalah aplikasi mobile penjelajah kuliner cerdas yang dibangun menggunakan **React Native + Expo SDK 58** (Frontend) dan **Node.js + Express 5** (Backend).
 
-Repository: https://github.com/rezajauhari555-code/ejakmakanapp
+Repository Resmi: [https://github.com/rezajauhari555-code/ejakmakanapp](https://github.com/rezajauhari555-code/ejakmakanapp)
 
-## Status
+---
 
-Fondasi project sudah tersedia:
+## ✨ Fitur Utama
 
-- Layar login mobile dengan tombol Google dan Apple.
-- Backend Express dengan endpoint health check.
-- Verifikasi token Google dan Apple di backend.
-- JWT aplikasi setelah token provider berhasil diverifikasi.
-- Konfigurasi aplikasi iOS dan Android.
+1. **Onboarding & Pengenalan Aplikasi**
+   - Panduan interaktif 3 langkah dengan tipografi iOS modern dan transisi halus.
+2. **Autentikasi & Manajemen Sesi**
+   - Google Sign-In menggunakan verifikasi token asli melalui `google-auth-library`.
+   - Apple Sign-In asli untuk iOS melalui `apple-signin-auth`.
+   - Autentikasi Email & Mode Eksplorasi Tamu.
+   - Penyimpanan sesi aman pada perangkat menggunakan `expo-secure-store`.
+3. **Personalisasi Preferensi Rasa**
+   - Pemilihan kategori makanan favorit (Nusantara, Kopi & Kafe, Jepang & Asia, Western, Street Food, Dessert).
+   - Penyesuaian suasana/mood kuliner (Makan Cepat, Nongkrong Santai, Family Time, Date Night, Kulineran Malam).
+4. **Beranda & Eksplorasi**
+   - Navigasi lokasi aktif (Jakarta, Indonesia).
+   - Pencarian instan berdasarkan nama sentra kuliner, kategori, atau menu.
+   - Filter cepat kategori kuliner.
+   - Banner pintasan ke Roda Rekomendasi.
+5. **🎯 Roda Rekomendasi Interaktif (Spinwheel)**
+   - Roda putar animasi interaktif berbasis physics rotation untuk pengguna yang bingung memilih makanan.
+   - 8 segmen rasa warna-warni dengan inspirasi hidangan spesifik.
+   - Modal hasil putaran dengan aksi langsung mencari sentra kuliner di peta.
+6. **⚙️ Spin Helper (Pengaturan Roda Putar)**
+   - Halaman khusus untuk mengkustomisasi roda rekomendasi.
+   - Preset cepat: *Makan Siang Hemat*, *Nongkrong & Kafe*, *Spesial & Dinner*, *Semua Selera*.
+   - Filter target budget (*Hemat < 25k*, *Sedang 25k - 60k*, *Puas > 60k*).
+   - Filter suasana/mood dan sakelar kurasi ramah Halal.
+   - Manajemen aktivasi segmen roda sesuai keinginan pengguna.
+7. **🗺️ Peta Kuliner Interaktif (Maps)**
+   - Menggunakan `react-native-maps` dengan lokasi sentra kuliner nyata dan koordinat GPS akurat (Jalan Sabang, Blok M Little Tokyo, Senopati & Suryo, Pasar Santa, Benhil, Kelapa Gading, Pantai Maju PIK).
+   - Filter chip kategori langsung di atas peta.
+   - Kartu preview bawah (bottom sheet) dengan tombol rute langsung ke aplikasi Apple Maps / Google Maps bawaan.
+8. **🔖 Koleksi Tempat Favorit**
+   - Menyimpan sentra kuliner untuk dikunjungi kembali.
+   - *Honest Empty State* yang informatif saat koleksi belum memiliki data.
+9. **🔍 Detail Sentra Kuliner**
+   - Informasi lengkap sentra rasa: foto cover, jam operasional, rating rasa, jarak estimasi, dan deskripsi kawasan.
+   - Rekomendasi hidangan populer wajib coba.
+   - Tombol integrasi kontak WhatsApp dan rute navigasi.
+10. **👤 Profil & Pengaturan Aplikasi**
+    - Ringkasan preferensi selera dan jumlah tempat yang disimpan.
+    - Kontrol notifikasi, akses GPS, pembersihan cache, dan logout aman.
 
-Fitur produk, keranjang, pesanan, database, dan akun email belum diimplementasikan.
+---
 
-## Teknologi
-
-- React Native 0.88 dan Expo SDK 58.
-- TypeScript untuk aplikasi mobile.
-- Node.js dan Express 5 untuk backend.
-- `google-auth-library` untuk verifikasi token Google.
-- `apple-signin-auth` untuk verifikasi token Apple.
-- JSON Web Token untuk sesi aplikasi.
-- `zod`, Helmet, CORS, dan dotenv.
-
-## Struktur Project
+## 🏗️ Struktur Project Modular
 
 ```text
 ejakmakanapp/
 ├── backend/
 │   ├── src/
-│   │   ├── services/providerAuth.js
-│   │   ├── app.js
-│   │   └── server.js
+│   │   ├── services/
+│   │   │   └── providerAuth.js      # Verifikasi token Google & Apple
+│   │   ├── app.js                   # Express application & routes
+│   │   └── server.js                # Server entry point
+│   ├── test/
+│   │   └── app.test.js              # Vitest API integration test suite
 │   ├── .env.example
 │   └── package.json
 ├── frontend/
-│   ├── App.tsx
-│   ├── app.json
+│   ├── src/
+│   │   ├── types/
+│   │   │   └── index.ts             # Definisi tipe TypeScript
+│   │   ├── theme/
+│   │   │   ├── colors.ts            # Skema warna Figma
+│   │   │   └── spacing.ts           # Spacing & border radius
+│   │   ├── services/
+│   │   │   ├── api.ts               # Klien HTTP backend
+│   │   │   ├── authService.ts       # Manajemen login & SecureStore
+│   │   │   └── culinaryData.ts      # Data sentra kuliner nyata & opsi spin
+│   │   ├── components/
+│   │   │   ├── common/              # Header, Button, Input, Icon, EmptyState
+│   │   │   ├── home/                # CategoryCard, DestinationCard, PromoBanner
+│   │   │   ├── spinwheel/           # SpinWheel, SpinResultModal
+│   │   │   └── navigation/          # BottomTabBar
+│   │   └── screens/
+│   │       ├── OnboardingScreen.tsx
+│   │       ├── LoginScreen.tsx
+│   │       ├── RegisterScreen.tsx
+│   │       ├── PreferencesScreen.tsx
+│   │       ├── HomeScreen.tsx
+│   │       ├── RecommendationsScreen.tsx # Layar Spinwheel
+│   │       ├── SpinHelperScreen.tsx      # Layar Spin Helper
+│   │       ├── MapScreen.tsx             # Layar Peta Interaktif
+│   │       ├── DetailScreen.tsx
+│   │       ├── CollectionScreen.tsx
+│   │       ├── ProfileScreen.tsx
+│   │       └── SettingsScreen.tsx
+│   ├── App.tsx                      # Root component & screen navigator
+│   ├── app.json                     # Konfigurasi Expo iOS & Android
 │   └── package.json
-├── .gitignore
 └── README.md
 ```
 
-## Persyaratan
+---
 
-- Node.js versi LTS.
-- npm.
-- Git.
-- Expo Go pada iPhone untuk testing melalui jaringan lokal.
-- Xcode hanya diperlukan untuk iOS Simulator atau build native lokal, dan Xcode hanya tersedia di macOS.
+## 🧰 Teknologi
 
-## Menjalankan Backend
+| Bagian | Teknologi |
+|---|---|
+| **Frontend Mobile** | React Native 0.88.1, Expo SDK 58.0.22, TypeScript 6.0 |
+| **Styling** | React Native StyleSheet (dioptimalkan untuk mobile iOS & Android) |
+| **Ikon** | `@expo/vector-icons` (Ionicons) |
+| **Peta** | `react-native-maps` |
+| **Penyimpanan Sesi** | `expo-secure-store` |
+| **Autentikasi Mobile** | `expo-auth-session`, `expo-apple-authentication`, `expo-web-browser` |
+| **Backend API** | Node.js, Express.js 5.1 (ES Modules) |
+| **Validasi & Keamanan** | Zod, Helmet, CORS, jsonwebtoken, dotenv |
+| **Verifikasi Provider** | `google-auth-library`, `apple-signin-auth` |
+| **Testing** | Vitest, Supertest |
 
-Masuk ke folder backend dan pasang dependency:
+---
+
+## 🚀 Panduan Menjalankan Project
+
+### 1. Menjalankan Backend API
+
+Masuk ke folder `backend`:
 
 ```powershell
 cd backend
 npm install
 ```
 
-Salin konfigurasi contoh:
+Salin file environment:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Isi `.env` dengan credential OAuth Anda. Jangan commit file `.env`.
-
-```env
-PORT=5000
-JWT_SECRET=ganti-dengan-secret-acak-yang-panjang
-JWT_EXPIRES_IN=7d
-GOOGLE_CLIENT_ID=your-google-web-client-id.apps.googleusercontent.com
-APPLE_CLIENT_ID=com.rezajauhari.ejakmakan
-APPLE_TEAM_ID=your-apple-team-id
-APPLE_KEY_ID=your-apple-key-id
-APPLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nreplace-me\n-----END PRIVATE KEY-----"
-```
-
-Jalankan server:
+Isi konfigurasi pada `.env` (PORT, JWT_SECRET, GOOGLE_CLIENT_ID, APPLE_CLIENT_ID). Jalankan server pengembangan:
 
 ```powershell
 npm run dev
 ```
 
-API berjalan pada `http://localhost:5000`.
+Server API berjalan di `http://localhost:5000`.
 
-## Endpoint Auth
+Uji endpoint health check:
 
-### Health check
-
-```http
-GET /api/health
+```powershell
+curl http://localhost:5000/api/health
 ```
 
-Response:
+Jalankan pengujian otomatis backend:
 
-```json
-{
-  "status": "ok",
-  "service": "ejakmakan-api"
-}
+```powershell
+npm test
 ```
 
-### Login Google
+---
 
-```http
-POST /api/auth/google
-Content-Type: application/json
-```
+### 2. Menjalankan Frontend Mobile (Expo)
 
-```json
-{
-  "token": "GOOGLE_ID_TOKEN_DARI_MOBILE"
-}
-```
-
-### Login Apple
-
-```http
-POST /api/auth/apple
-Content-Type: application/json
-```
-
-```json
-{
-  "token": "APPLE_ID_TOKEN_DARI_MOBILE"
-}
-```
-
-Backend memverifikasi token provider, kemudian mengembalikan JWT aplikasi dan data user. Jangan mengirim access token palsu atau credential rahasia dari aplikasi mobile.
-
-## Menjalankan Frontend
-
-Masuk ke folder frontend dan pasang dependency:
+Buka terminal baru dan masuk ke folder `frontend`:
 
 ```powershell
 cd frontend
 npm install
 ```
 
-Atur URL API melalui environment Expo. Untuk Android Emulator gunakan `10.0.2.2`; untuk iPhone fisik gunakan alamat IP komputer di jaringan lokal.
+Atur variabel environment di file `frontend/.env`:
+
+```env
+EXPO_PUBLIC_API_URL=http://localhost:5000
+EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=your-ios-client-id.apps.googleusercontent.com
+EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=your-android-client-id.apps.googleusercontent.com
+EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=your-web-client-id.apps.googleusercontent.com
+```
+
+> **Catatan Pengujian Fisik (iPhone / Android)**: Ganti `localhost` pada `EXPO_PUBLIC_API_URL` dengan alamat IP Wi-Fi lokal komputer Anda (contoh: `http://192.168.1.50:5000`).
+
+Jalankan bundler Expo:
 
 ```powershell
-$env:EXPO_PUBLIC_API_URL = "http://192.168.1.10:5000"
 npx expo start
 ```
 
-Ganti `192.168.1.10` dengan alamat IP komputer Anda. `localhost` pada iPhone menunjuk ke iPhone, bukan ke komputer.
+- **Testing di iPhone**: Buka aplikasi **Expo Go** atau Kamera di iPhone, lalu scan QR code pada terminal.
+- **Testing di Android**: Scan QR code menggunakan aplikasi **Expo Go** di Android.
 
-### Testing di iPhone dari Windows
+---
 
-1. Install Expo Go dari App Store.
-2. Pastikan iPhone dan komputer tersambung ke Wi-Fi yang sama.
-3. Jalankan `npx expo start --lan` dari folder `frontend`.
-4. Scan QR code dari Expo Go atau kamera iPhone.
+## 🧪 Validasi Kualitas Kode
 
-Windows tidak dapat menjalankan iOS Simulator. Untuk iOS Simulator gunakan macOS + Xcode. Untuk build iOS dari Windows, gunakan EAS Build setelah menyiapkan akun Expo dan Apple Developer.
-
-## Identitas Aplikasi
-
-Konfigurasi di `frontend/app.json`:
-
-- Nama: `Ejakmakan`.
-- Slug: `ejakmakan`.
-- iOS Bundle ID: `com.rezajauhari.ejakmakan`.
-- Android package: `com.rezajauhari.ejakmakan`.
-- Versi: `1.0.0`.
-
-## Styling Mobile
-
-Frontend menggunakan `StyleSheet` bawaan React Native, bukan CSS web. Pendekatan ini dipilih karena ringan dan sesuai dengan komponen native. NativeWind dapat ditambahkan kemudian jika project membutuhkan workflow utility class seperti Tailwind CSS.
-
-## Validasi
-
-Typecheck frontend:
+Frontend typecheck:
 
 ```powershell
 cd frontend
 npx tsc --noEmit
 ```
 
-Syntax check backend:
+Backend syntax check:
 
 ```powershell
 cd backend
 node --check src/app.js
-node --check src/services/providerAuth.js
 node --check src/server.js
+node --check src/services/providerAuth.js
+npm test
 ```
 
-## Keamanan
+---
 
-- Jangan commit `.env`, private key Apple, client secret, atau JWT secret.
-- Validasi token Google dan Apple selalu dilakukan di backend.
-- Gunakan HTTPS untuk environment production.
-- Ganti `JWT_SECRET` dengan nilai acak yang panjang.
-- Credential Google Cloud, Apple Developer, dan Expo harus dibuat oleh pemilik akun masing-masing.
+## 🔒 Keamanan
 
-## Git
-
-```powershell
-git status
-git add .
-git commit -m "Describe Ejakmakan project setup"
-git push origin main
-```
-
-## Lisensi
-
-Lisensi project belum ditentukan.
+1. Rahasia seperti `JWT_SECRET`, private key Apple, dan client secret tidak disimpan di frontend maupun git repository.
+2. Token provider Google dan Apple selalu diverifikasi melalui library resmi di backend sebelum menerbitkan JWT aplikasi.
+3. Seluruh sesi login disimpan di enkripsi keychain/keystore native via `expo-secure-store`.

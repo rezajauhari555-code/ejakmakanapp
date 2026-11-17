@@ -1,68 +1,237 @@
+import React, { useEffect, useState } from 'react';
+import { Platform, SafeAreaView, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import * as Google from 'expo-auth-session/providers/google';
+import * as SecureStore from 'expo-secure-store';
+import * as WebBrowser from 'expo-web-browser';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:5000';
+import { BottomTabBar, MainTabKey } from './src/components/navigation/BottomTabBar';
+import OnboardingScreen from './app/(onboarding)/index';
+import LoginScreen from './app/(auth)/login';
+import RegisterScreen from './app/(auth)/register';
+import PreferencesScreen from './app/preferences';
+import ExploreScreen from './app/(tabs)/explore';
+import RecommendationsScreen from './app/(tabs)/recommendations';
+import FavoritesScreen from './app/(tabs)/favorites';
+import ProfileScreen from './app/(tabs)/profile';
+import RestaurantDetailScreen from './app/restaurants/[id]';
+
+import { getStoredSession, saveStoredSession, clearStoredSession } from './src/services/authService';
+import { useAppStore } from './src/store/useAppStore';
+import { AppScreen, Restaurant, UserProfile } from './src/types';
+import { DEMO_USER } from './src/services/mockData';
+import { colors } from './src/theme/colors';
+
+WebBrowser.maybeCompleteAuthSession();
+
+const GOOGLE_IOS_CLIENT_ID =
+  process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || 'google-client-id-not-configured';
+const GOOGLE_ANDROID_CLIENT_ID =
+  process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || 'google-client-id-not-configured';
+const GOOGLE_WEB_CLIENT_ID =
+  process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || 'google-client-id-not-configured';
 
 export default function App() {
-  const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
+  const [currentScreen, setCurrentScreen] = useState<AppScreen>('explore');
+  const [activeTab, setActiveTab] = useState<MainTabKey>('explore');
+  const [selectedRestaurantId, setSelectedRestaurantId] = useState<string>('kopi-sapa');
+  const [previousTab, setPreviousTab] = useState<MainTabKey>('explore');
 
-  async function handleProviderLogin(provider: 'google' | 'apple') {
-    setLoadingProvider(provider);
+  const { loginUser, logout: storeLogout } = useAppStore();
 
-    try {
-      const response = await fetch(`${API_URL}/api/auth/${provider}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: 'native-provider-token' }),
-      });
+  // Google OAuth Hook
+  const [googleRequest, googleResponse, promptGoogle] = Google.useAuthRequest({
+    iosClientId: GOOGLE_IOS_CLIENT_ID,
+    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+    webClientId: GOOGLE_WEB_CLIENT_ID,
+  });
 
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message ?? 'Login gagal');
+  useEffect(() => {
+    async function initSession() {
+      try {
+        const session = await getStoredSession();
+        if (session) {
+          loginUser({
+            id: 'stored-user',
+            name: session.name || 'Dimas Pratama',
+            email: session.email || 'dimas.pratama@ejakmakan.id',
+            phone: '+62 812-3456-7890',
+            foodieLevel: 4,
+            foodieTitle: 'Foodie Explorer',
+            xpCurrent: 850,
+            xpMax: 1000,
+            avatarInitials: session.name ? session.name.substring(0, 2).toUpperCase() : 'DP',
+            reviewsCount: 32,
+            photosCount: 124,
+            collectionsCount: 18,
+            provider: session.provider as any,
+          });
+          setCurrentScreen('explore');
+        } else {
+          // Default to explore screen with demo user for smooth instant experience
+          loginUser(DEMO_USER);
+          setCurrentScreen('explore');
+        }
+      } catch (err) {
+        console.warn('Session init warning:', err);
       }
+    }
+    initSession();
+  }, []);
 
-      Alert.alert('Login berhasil', `Selamat datang, ${result.user.name}`);
-    } catch (error) {
-      Alert.alert(
-        'Login belum siap',
-        error instanceof Error ? error.message : 'Tidak dapat terhubung ke server',
-      );
-    } finally {
-      setLoadingProvider(null);
+  function handleTabSelect(tab: MainTabKey) {
+    setActiveTab(tab);
+    setCurrentScreen(tab as AppScreen);
+  }
+
+  function handleSelectRestaurant(restaurant: Restaurant) {
+    setSelectedRestaurantId(restaurant.id);
+    setPreviousTab(activeTab);
+    setCurrentScreen('restaurant-detail');
+  }
+
+  function handleBackFromDetail() {
+    setCurrentScreen(previousTab as AppScreen);
+  }
+
+  function handleLoginSuccess(user: UserProfile) {
+    loginUser(user);
+    saveStoredSession({
+      token: 'demo-jwt-token',
+      name: user.name,
+      email: user.email,
+      provider: user.provider,
+      avatarUrl: null,
+    });
+    setActiveTab('explore');
+    setCurrentScreen('explore');
+  }
+
+  function handleLogout() {
+    storeLogout();
+    clearStoredSession();
+    setCurrentScreen('login');
+  }
+
+  // Render main screen component based on currentScreen state
+  function renderScreenContent() {
+    switch (currentScreen) {
+      case 'onboarding':
+        return (
+          <OnboardingScreen
+            onStart={() => setCurrentScreen('register')}
+            onSkip={() => {
+              setActiveTab('explore');
+              setCurrentScreen('explore');
+            }}
+            onLogin={() => setCurrentScreen('login')}
+          />
+        );
+
+      case 'login':
+        return (
+          <LoginScreen
+            onLoginSuccess={handleLoginSuccess}
+            onGoToRegister={() => setCurrentScreen('register')}
+            onExploreAsGuest={() => {
+              setActiveTab('explore');
+              setCurrentScreen('explore');
+            }}
+          />
+        );
+
+      case 'register':
+        return (
+          <RegisterScreen
+            onRegisterSuccess={() => setCurrentScreen('preferences')}
+            onGoToLogin={() => setCurrentScreen('login')}
+            onSkip={() => {
+              setActiveTab('explore');
+              setCurrentScreen('explore');
+            }}
+          />
+        );
+
+      case 'preferences':
+        return (
+          <PreferencesScreen
+            onSave={() => {
+              setActiveTab('explore');
+              setCurrentScreen('explore');
+            }}
+            onSkip={() => {
+              setActiveTab('explore');
+              setCurrentScreen('explore');
+            }}
+          />
+        );
+
+      case 'explore':
+        return (
+          <ExploreScreen
+            onSelectRestaurant={handleSelectRestaurant}
+            onNavigateToSpin={() => handleTabSelect('recommendations')}
+            onNavigateToProfile={() => handleTabSelect('profile')}
+          />
+        );
+
+      case 'recommendations':
+        return (
+          <RecommendationsScreen
+            onSelectRestaurant={handleSelectRestaurant}
+            onNavigateToProfile={() => handleTabSelect('profile')}
+          />
+        );
+
+      case 'favorites':
+        return (
+          <FavoritesScreen
+            onSelectRestaurant={handleSelectRestaurant}
+            onNavigateToExplore={() => handleTabSelect('explore')}
+            onNavigateToProfile={() => handleTabSelect('profile')}
+          />
+        );
+
+      case 'profile':
+        return (
+          <ProfileScreen
+            onLogout={handleLogout}
+            onNavigateToPreferences={() => setCurrentScreen('preferences')}
+          />
+        );
+
+      case 'restaurant-detail':
+        return (
+          <RestaurantDetailScreen
+            restaurantId={selectedRestaurantId}
+            onBack={handleBackFromDetail}
+          />
+        );
+
+      default:
+        return (
+          <ExploreScreen
+            onSelectRestaurant={handleSelectRestaurant}
+            onNavigateToSpin={() => handleTabSelect('recommendations')}
+            onNavigateToProfile={() => handleTabSelect('profile')}
+          />
+        );
     }
   }
 
+  const isMainTab = ['explore', 'recommendations', 'favorites', 'profile'].includes(currentScreen);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.eyebrow}>EJAKMAKAN</Text>
-      <Text style={styles.title}>Makan enak, lebih dekat.</Text>
-      <Text style={styles.subtitle}>Masuk untuk menemukan pilihan makanan favoritmu.</Text>
-
-      <View style={styles.actions}>
-        <Pressable
-          style={[styles.button, styles.googleButton]}
-          disabled={loadingProvider !== null}
-          onPress={() => handleProviderLogin('google')}
-        >
-          <Text style={styles.googleButtonText}>
-            {loadingProvider === 'google' ? 'Menghubungkan...' : 'Lanjutkan dengan Google'}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={[styles.button, styles.appleButton]}
-          disabled={loadingProvider !== null}
-          onPress={() => handleProviderLogin('apple')}
-        >
-          <Text style={styles.appleButtonText}>
-            {loadingProvider === 'apple' ? 'Menghubungkan...' : 'Lanjutkan dengan Apple'}
-          </Text>
-        </Pressable>
-      </View>
-
-      <Text style={styles.endpoint}>API: {API_URL}</Text>
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
+      <View style={styles.content}>{renderScreenContent()}</View>
+      {isMainTab && (
+        <BottomTabBar
+          activeTab={activeTab}
+          onSelectTab={handleTabSelect}
+        />
+      )}
     </View>
   );
 }
@@ -70,64 +239,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F1E8',
-    padding: 28,
-    justifyContent: 'center',
+    backgroundColor: colors.background,
   },
-  eyebrow: {
-    color: '#D85B3F',
-    fontSize: 14,
-    fontWeight: '700',
-    letterSpacing: 2,
-    marginBottom: 16,
-  },
-  title: {
-    color: '#201C1A',
-    fontSize: 38,
-    fontWeight: '800',
-    lineHeight: 44,
-    maxWidth: 310,
-  },
-  subtitle: {
-    color: '#6E6259',
-    fontSize: 16,
-    lineHeight: 24,
-    marginTop: 14,
-    maxWidth: 300,
-  },
-  actions: {
-    gap: 12,
-    marginTop: 42,
-    width: '100%',
-  },
-  button: {
-    alignItems: 'center',
-    borderRadius: 10,
-    minHeight: 54,
-    justifyContent: 'center',
-    paddingHorizontal: 18,
-  },
-  googleButton: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#DED4C9',
-    borderWidth: 1,
-  },
-  googleButtonText: {
-    color: '#201C1A',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  appleButton: {
-    backgroundColor: '#201C1A',
-  },
-  appleButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  endpoint: {
-    color: '#A3978D',
-    fontSize: 11,
-    marginTop: 28,
+  content: {
+    flex: 1,
   },
 });
