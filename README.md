@@ -1,216 +1,503 @@
 # 🍽️ Ejakmakan
 
-**Ejakmakan** adalah aplikasi mobile penjelajah kuliner cerdas yang dibangun menggunakan **React Native + Expo SDK 58** (Frontend) dan **Node.js + Express 5** (Backend).
+**Ejakmakan** adalah aplikasi mobile penjelajah kuliner cerdas yang membantu pengguna menemukan sentra kuliner, mengeksplorasi berbagai pilihan makanan, dan memperoleh rekomendasi tempat makan sesuai preferensi serta anggaran.
 
-Repository Resmi: [https://github.com/rezajauhari555-code/ejakmakanapp](https://github.com/rezajauhari555-code/ejakmakanapp)
+Aplikasi ini dikembangkan menggunakan **React Native, Expo SDK 58, dan TypeScript** untuk frontend, serta **Node.js dan Express.js 5** untuk backend REST API.
+
+\<p align="center">   \<a href="[https://www.figma.com/design/QfoxA3XmtHH776m97ERqD9/Untitled?node-id=0-1&t=veKPYPreFjZqLaem-0](https://www.figma.com/design/QfoxA3XmtHH776m97ERqD9/Untitled?node-id=0-1\&t=veKPYPreFjZqLaem-0)">     🎨 View UI/UX Design – Figma   \</a> \</p>
+
+\<p align="center">   \<a href="[https://github.com/rezajauhari555-code/ejakmakanapp](https://github.com/rezajauhari555-code/ejakmakanapp)">GitHub Repository\</a> \</p>
+
+---
+
+## 🎨 UI/UX Design
+
+Seluruh rancangan antarmuka dan pengalaman pengguna Ejakmakan dapat dilihat melalui tautan Figma berikut:
+
+- **Design Tool:** Figma
+- **Platform:** Android dan iOS
+- **Design Reference:** [Ejakmakan – Figma Design](https://www.figma.com/design/QfoxA3XmtHH776m97ERqD9/Untitled?node-id=0-1\&t=veKPYPreFjZqLaem-0)
 
 ---
 
 ## ✨ Fitur Utama
 
-1. **Onboarding & Pengenalan Aplikasi**
-   - Panduan interaktif 3 langkah dengan tipografi iOS modern dan transisi halus.
-2. **Autentikasi & Manajemen Sesi**
-   - Google Sign-In menggunakan verifikasi token asli melalui `google-auth-library`.
-   - Apple Sign-In asli untuk iOS melalui `apple-signin-auth`.
-   - Autentikasi Email & Mode Eksplorasi Tamu.
-   - Penyimpanan sesi aman pada perangkat menggunakan `expo-secure-store`.
-3. **Personalisasi Preferensi Rasa**
-   - Pemilihan kategori makanan favorit (Nusantara, Kopi & Kafe, Jepang & Asia, Western, Street Food, Dessert).
-   - Penyesuaian suasana/mood kuliner (Makan Cepat, Nongkrong Santai, Family Time, Date Night, Kulineran Malam).
-4. **Beranda & Eksplorasi**
-   - Navigasi lokasi aktif (Jakarta, Indonesia).
-   - Pencarian instan berdasarkan nama sentra kuliner, kategori, atau menu.
-   - Filter cepat kategori kuliner.
-   - Banner pintasan ke Roda Rekomendasi.
-5. **🎯 Roda Rekomendasi Interaktif (Spinwheel)**
-   - Roda putar animasi interaktif berbasis physics rotation untuk pengguna yang bingung memilih makanan.
-   - 8 segmen rasa warna-warni dengan inspirasi hidangan spesifik.
-   - Modal hasil putaran dengan aksi langsung mencari sentra kuliner di peta.
-6. **⚙️ Spin Helper (Pengaturan Roda Putar)**
-   - Halaman khusus untuk mengkustomisasi roda rekomendasi.
-   - Preset cepat: *Makan Siang Hemat*, *Nongkrong & Kafe*, *Spesial & Dinner*, *Semua Selera*.
-   - Filter target budget (*Hemat < 25k*, *Sedang 25k - 60k*, *Puas > 60k*).
-   - Filter suasana/mood dan sakelar kurasi ramah Halal.
-   - Manajemen aktivasi segmen roda sesuai keinginan pengguna.
-7. **🗺️ Peta Kuliner Interaktif (Maps)**
-   - Menggunakan `react-native-maps` dengan lokasi sentra kuliner nyata dan koordinat GPS akurat (Jalan Sabang, Blok M Little Tokyo, Senopati & Suryo, Pasar Santa, Benhil, Kelapa Gading, Pantai Maju PIK).
-   - Filter chip kategori langsung di atas peta.
-   - Kartu preview bawah (bottom sheet) dengan tombol rute langsung ke aplikasi Apple Maps / Google Maps bawaan.
-8. **🔖 Koleksi Tempat Favorit**
-   - Menyimpan sentra kuliner untuk dikunjungi kembali.
-   - *Honest Empty State* yang informatif saat koleksi belum memiliki data.
-9. **🔍 Detail Sentra Kuliner**
-   - Informasi lengkap sentra rasa: foto cover, jam operasional, rating rasa, jarak estimasi, dan deskripsi kawasan.
-   - Rekomendasi hidangan populer wajib coba.
-   - Tombol integrasi kontak WhatsApp dan rute navigasi.
-10. **👤 Profil & Pengaturan Aplikasi**
-    - Ringkasan preferensi selera dan jumlah tempat yang disimpan.
-    - Kontrol notifikasi, akses GPS, pembersihan cache, dan logout aman.
+### 1. Onboarding & Pengenalan Aplikasi
+
+- Panduan interaktif sebanyak 3 langkah.
+- Pengenalan fitur dan fungsi utama aplikasi.
+- Tampilan modern dengan transisi antarlayar yang halus.
+
+### 2. Autentikasi & Manajemen Sesi
+
+- **Google Sign-In** dengan verifikasi token melalui `google-auth-library`.
+- **Apple Sign-In** dengan verifikasi identitas melalui `apple-signin-auth`.
+- Autentikasi menggunakan email.
+- Mode eksplorasi tamu (Guest Mode).
+- Penyimpanan sesi secara aman menggunakan `expo-secure-store`.
+- Pengelolaan autentikasi melalui backend REST API.
+
+### 3. Personalisasi Preferensi Rasa
+
+- Pemilihan kategori makanan favorit:
+  - Nusantara
+  - Kopi & Kafe
+  - Jepang & Asia
+  - Western
+  - Street Food
+  - Dessert
+- Penyesuaian suasana kuliner:
+  - Makan Cepat
+  - Nongkrong Santai
+  - Family Time
+  - Date Night
+  - Kulineran Malam
+
+### 4. Beranda & Eksplorasi
+
+- Navigasi berdasarkan lokasi aktif (Jakarta, Indonesia).
+- Pencarian berdasarkan nama sentra kuliner, kategori, atau menu.
+- Filter kategori kuliner.
+- Banner pintasan menuju fitur Roda Rekomendasi.
+
+### 5. 🎯 Roda Rekomendasi Interaktif (Spinwheel)
+
+- Roda putar animasi untuk membantu pengguna menentukan pilihan makanan.
+- Delapan segmen rekomendasi dengan inspirasi hidangan spesifik.
+- Animasi rotasi interaktif.
+- Modal hasil putaran dengan pintasan pencarian sentra kuliner melalui peta.
+
+### 6. ⚙️ Spin Helper
+
+- Pengaturan dan kustomisasi roda rekomendasi.
+- Preset pilihan:
+  - Makan Siang Hemat
+  - Nongkrong & Kafe
+  - Spesial & Dinner
+  - Semua Selera
+- Filter anggaran:
+  - Hemat: di bawah Rp25.000
+  - Sedang: Rp25.000–Rp60.000
+  - Puas: di atas Rp60.000
+- Filter suasana dan preferensi kuliner ramah halal.
+- Pengaturan aktivasi segmen roda.
+
+### 7. 🗺️ Peta Kuliner Interaktif
+
+- Integrasi `react-native-maps`.
+- Menampilkan lokasi sentra kuliner di Jakarta:
+  - Jalan Sabang
+  - Blok M Little Tokyo
+  - Senopati & Suryo
+  - Pasar Santa
+  - Benhil
+  - Kelapa Gading
+  - Pantai Maju PIK
+- Filter kategori langsung melalui peta.
+- Kartu informasi lokasi (Bottom Sheet).
+- Navigasi rute berdasarkan platform:
+  - **Android:** Google Maps.
+  - **iOS:** Apple Maps.
+
+### 8. 🔖 Koleksi Tempat Favorit
+
+- Menyimpan sentra kuliner favorit.
+- Mengakses kembali tempat yang ingin dikunjungi.
+- Empty State informatif ketika belum ada tempat tersimpan.
+
+### 9. 🔍 Detail Sentra Kuliner
+
+- Foto dan deskripsi kawasan kuliner.
+- Informasi jam operasional.
+- Rating dan estimasi jarak.
+- Rekomendasi hidangan populer.
+- Integrasi WhatsApp Click to Chat untuk menghubungi pengelola tempat kuliner.
+- Pintasan navigasi menggunakan aplikasi peta sesuai platform perangkat.
+
+### 10. 👤 Profil & Pengaturan Aplikasi
+
+- Ringkasan preferensi kuliner.
+- Informasi jumlah tempat favorit.
+- Pengaturan notifikasi.
+- Pengaturan akses GPS.
+- Pembersihan cache.
+- Logout dan manajemen sesi.
 
 ---
 
-## 🏗️ Struktur Project Modular
+## 🏗️ Struktur Project
+
+Project menggunakan arsitektur modular yang memisahkan frontend mobile dan backend REST API.
 
 ```text
 ejakmakanapp/
 ├── backend/
 │   ├── src/
 │   │   ├── services/
-│   │   │   └── providerAuth.js      # Verifikasi token Google & Apple
-│   │   ├── app.js                   # Express application & routes
-│   │   └── server.js                # Server entry point
+│   │   │   └── providerAuth.js
+│   │   ├── app.js
+│   │   └── server.js
 │   ├── test/
-│   │   └── app.test.js              # Vitest API integration test suite
+│   │   └── app.test.js
 │   ├── .env.example
 │   └── package.json
+│
 ├── frontend/
 │   ├── src/
 │   │   ├── types/
-│   │   │   └── index.ts             # Definisi tipe TypeScript
+│   │   │   └── index.ts
 │   │   ├── theme/
-│   │   │   ├── colors.ts            # Skema warna Figma
-│   │   │   └── spacing.ts           # Spacing & border radius
+│   │   │   ├── colors.ts
+│   │   │   └── spacing.ts
 │   │   ├── services/
-│   │   │   ├── api.ts               # Klien HTTP backend
-│   │   │   ├── authService.ts       # Manajemen login & SecureStore
-│   │   │   └── culinaryData.ts      # Data sentra kuliner nyata & opsi spin
+│   │   │   ├── api.ts
+│   │   │   ├── authService.ts
+│   │   │   └── culinaryData.ts
 │   │   ├── components/
-│   │   │   ├── common/              # Header, Button, Input, Icon, EmptyState
-│   │   │   ├── home/                # CategoryCard, DestinationCard, PromoBanner
-│   │   │   ├── spinwheel/           # SpinWheel, SpinResultModal
-│   │   │   └── navigation/          # BottomTabBar
+│   │   │   ├── common/
+│   │   │   ├── home/
+│   │   │   ├── spinwheel/
+│   │   │   └── navigation/
 │   │   └── screens/
 │   │       ├── OnboardingScreen.tsx
 │   │       ├── LoginScreen.tsx
 │   │       ├── RegisterScreen.tsx
 │   │       ├── PreferencesScreen.tsx
 │   │       ├── HomeScreen.tsx
-│   │       ├── RecommendationsScreen.tsx # Layar Spinwheel
-│   │       ├── SpinHelperScreen.tsx      # Layar Spin Helper
-│   │       ├── MapScreen.tsx             # Layar Peta Interaktif
+│   │       ├── RecommendationsScreen.tsx
+│   │       ├── SpinHelperScreen.tsx
+│   │       ├── MapScreen.tsx
 │   │       ├── DetailScreen.tsx
 │   │       ├── CollectionScreen.tsx
 │   │       ├── ProfileScreen.tsx
 │   │       └── SettingsScreen.tsx
-│   ├── App.tsx                      # Root component & screen navigator
-│   ├── app.json                     # Konfigurasi Expo iOS & Android
+│   ├── App.tsx
+│   ├── app.json
 │   └── package.json
+│
+├── .gitignore
 └── README.md
 ```
 
 ---
 
-## 🧰 Teknologi
+## 🧰 Teknologi yang Digunakan
 
-| Bagian | Teknologi |
-|---|---|
-| **Frontend Mobile** | React Native 0.88.1, Expo SDK 58.0.22, TypeScript 6.0 |
-| **Styling** | React Native StyleSheet (dioptimalkan untuk mobile iOS & Android) |
-| **Ikon** | `@expo/vector-icons` (Ionicons) |
-| **Peta** | `react-native-maps` |
-| **Penyimpanan Sesi** | `expo-secure-store` |
-| **Autentikasi Mobile** | `expo-auth-session`, `expo-apple-authentication`, `expo-web-browser` |
-| **Backend API** | Node.js, Express.js 5.1 (ES Modules) |
-| **Validasi & Keamanan** | Zod, Helmet, CORS, jsonwebtoken, dotenv |
-| **Verifikasi Provider** | `google-auth-library`, `apple-signin-auth` |
-| **Testing** | Vitest, Supertest |
+| Bagian                            | Teknologi                        |
+| --------------------------------- | -------------------------------- |
+| Mobile Framework                  | React Native 0.88.1              |
+| Development Platform              | Expo SDK 58.0.22                 |
+| Programming Language              | TypeScript 6.0                   |
+| Styling                           | React Native StyleSheet          |
+| Icon Library                      | @expo/vector-icons (Ionicons)    |
+| Maps Integration                  | react-native-maps                |
+| Secure Storage                    | expo-secure-store                |
+| Authentication                    | expo-auth-session                |
+| Apple Authentication              | expo-apple-authentication        |
+| Browser Integration               | expo-web-browser                 |
+| WhatsApp Integration              | WhatsApp Click to Chat (`wa.me`) |
+| Backend Runtime                   | Node.js                          |
+| Backend Framework                 | Express.js 5.1                   |
+| Validation                        | Zod                              |
+| Security                          | Helmet, CORS                     |
+| Token Authentication              | JSON Web Token                   |
+| Environment Configuration         | dotenv                           |
+| Google Authentication             | google-auth-library              |
+| Apple Authentication Verification | apple-signin-auth                |
+| Testing                           | Vitest, Supertest                |
 
 ---
 
-## 🚀 Panduan Menjalankan Project
+## 🚀 Panduan Instalasi dan Menjalankan Project
 
-### 1. Menjalankan Backend API
+### Persyaratan Sistem
 
-Masuk ke folder `backend`:
+Pastikan perangkat pengembangan telah memiliki:
 
-```powershell
+- Node.js versi LTS.
+- npm.
+- Git.
+- Android Studio dan Android SDK untuk pengembangan Android.
+- Xcode dan iOS Simulator untuk pengembangan iOS (macOS).
+- Expo Go untuk pengujian pada perangkat yang kompatibel.
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/rezajauhari555-code/ejakmakanapp.git
+
+cd ejakmakanapp
+```
+
+### 2. Menjalankan Backend API
+
+Masuk ke direktori backend:
+
+```bash
 cd backend
 npm install
 ```
 
-Salin file environment:
+Salin konfigurasi environment:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Isi konfigurasi pada `.env` (PORT, JWT_SECRET, GOOGLE_CLIENT_ID, APPLE_CLIENT_ID). Jalankan server pengembangan:
+Atur konfigurasi pada file `.env`:
 
-```powershell
+```env
+PORT=5000
+JWT_SECRET=your-long-random-secret
+JWT_EXPIRES_IN=7d
+
+GOOGLE_CLIENT_ID=your-google-web-client-id.apps.googleusercontent.com
+APPLE_CLIENT_ID=your-apple-service-id-or-bundle-id
+```
+
+Jalankan backend:
+
+```bash
 npm run dev
 ```
 
-Server API berjalan di `http://localhost:5000`.
+Backend API berjalan pada:
 
-Uji endpoint health check:
+```text
+http://localhost:5000
+```
 
-```powershell
+Untuk memeriksa status backend:
+
+```bash
 curl http://localhost:5000/api/health
 ```
 
-Jalankan pengujian otomatis backend:
+Menjalankan pengujian backend:
 
-```powershell
+```bash
 npm test
 ```
 
----
+### 3. Menjalankan Frontend Mobile
 
-### 2. Menjalankan Frontend Mobile (Expo)
+Buka terminal baru dan masuk ke direktori frontend:
 
-Buka terminal baru dan masuk ke folder `frontend`:
-
-```powershell
+```bash
 cd frontend
 npm install
 ```
 
-Atur variabel environment di file `frontend/.env`:
+Atur alamat backend melalui environment variable:
 
 ```env
 EXPO_PUBLIC_API_URL=http://localhost:5000
-EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=your-ios-client-id.apps.googleusercontent.com
+
 EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=your-android-client-id.apps.googleusercontent.com
+EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=your-ios-client-id.apps.googleusercontent.com
 EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=your-web-client-id.apps.googleusercontent.com
 ```
 
-> **Catatan Pengujian Fisik (iPhone / Android)**: Ganti `localhost` pada `EXPO_PUBLIC_API_URL` dengan alamat IP Wi-Fi lokal komputer Anda (contoh: `http://192.168.1.50:5000`).
+**Konfigurasi alamat API berdasarkan perangkat:**
 
-Jalankan bundler Expo:
+| Perangkat        | Alamat Backend            |
+| ---------------- | ------------------------- |
+| Android Emulator | `http://10.0.2.2:5000`    |
+| Android Fisik    | `http://IP-KOMPUTER:5000` |
+| iOS Simulator    | `http://localhost:5000`   |
+| iPhone Fisik     | `http://IP-KOMPUTER:5000` |
 
-```powershell
+Untuk perangkat fisik, gunakan alamat IP lokal komputer yang terhubung ke jaringan Wi-Fi yang sama.
+
+Contoh:
+
+```env
+EXPO_PUBLIC_API_URL=http://192.168.1.50:5000
+```
+
+Jalankan Expo:
+
+```bash
 npx expo start
 ```
 
-- **Testing di iPhone**: Buka aplikasi **Expo Go** atau Kamera di iPhone, lalu scan QR code pada terminal.
-- **Testing di Android**: Scan QR code menggunakan aplikasi **Expo Go** di Android.
+### 4. Konfigurasi Autentikasi Google dan Apple
+
+**Google Sign-In**
+
+- Siapkan OAuth Client ID melalui Google Cloud Console.
+- Konfigurasikan Client ID untuk Android, iOS, dan Web sesuai kebutuhan.
+- Sesuaikan konfigurasi aplikasi dengan package name Android dan bundle identifier iOS.
+- Pastikan backend memverifikasi token Google sebelum menerbitkan JWT aplikasi.
+
+**Apple Sign-In**
+
+- Siapkan konfigurasi Sign in with Apple melalui Apple Developer.
+- Aktifkan capability Sign in with Apple pada App ID yang digunakan.
+- Konfigurasikan Bundle ID dan Service ID sesuai alur autentikasi yang diterapkan.
+- Gunakan `expo-apple-authentication` untuk autentikasi native pada iOS.
+- Gunakan alur OAuth berbasis web untuk Apple Sign-In pada Android jika fitur tersebut diaktifkan di aplikasi.
+- Verifikasi identity token Apple melalui backend menggunakan `apple-signin-auth` sebelum menerbitkan JWT aplikasi.
+
+**Catatan:** Apple Sign-In native menggunakan perangkat iOS yang kompatibel. Implementasi pada Android memerlukan alur web OAuth tersendiri. Credential rahasia Apple dan konfigurasi provider harus disimpan di backend, bukan di aplikasi frontend.
+
+### 5. Integrasi WhatsApp
+
+Ejakmakan menggunakan **WhatsApp Click to Chat** untuk memudahkan pengguna menghubungi pengelola atau pemilik tempat kuliner melalui halaman detail sentra kuliner.
+
+**Fitur integrasi:**
+
+- Menghubungkan pengguna dengan kontak WhatsApp tempat kuliner.
+- Membuka percakapan melalui aplikasi WhatsApp atau WhatsApp Web.
+- Menyediakan pesan otomatis sebagai pembuka percakapan.
+- Mempermudah pengguna bertanya mengenai informasi tempat makan.
+
+**Format URL WhatsApp:**
+
+```text
+https://wa.me/6281234567890
+```
+
+Nomor telepon harus menggunakan format internasional tanpa tanda `+`, spasi, atau angka `0` di awal nomor lokal.
+
+**Contoh implementasi React Native:**
+
+```typescript
+import { Linking } from "react-native";
+
+const openWhatsApp = (phoneNumber: string) => {
+  const formattedNumber = phoneNumber.replace(/\D/g, "");
+
+  const whatsappUrl = `https://wa.me/${formattedNumber}`;
+
+  Linking.openURL(whatsappUrl);
+};
+```
+
+**Contoh dengan pesan otomatis:**
+
+```typescript
+import { Linking } from "react-native";
+
+const openWhatsApp = (phoneNumber: string) => {
+  const formattedNumber = phoneNumber.replace(/\D/g, "");
+
+  const message = encodeURIComponent(
+    "Halo, saya ingin bertanya mengenai tempat kuliner Anda."
+  );
+
+  const whatsappUrl =
+    `https://wa.me/${formattedNumber}?text=${message}`;
+
+  Linking.openURL(whatsappUrl);
+};
+```
+
+**Catatan:** Integrasi ini menggunakan WhatsApp Click to Chat, bukan WhatsApp Business Platform API. Pengguna tetap memerlukan akses ke WhatsApp untuk melanjutkan percakapan. Integrasi ini tidak memerlukan access token WhatsApp Business API.
+
+### 6. Pengujian Aplikasi Android
+
+**Menggunakan Android Emulator:**
+
+1. Buka Android Studio.
+2. Jalankan Android Virtual Device (AVD).
+3. Pastikan backend sudah aktif.
+4. Jalankan Expo dari direktori frontend.
+5. Buka aplikasi melalui emulator.
+
+**Menggunakan Perangkat Android Fisik:**
+
+1. Install Expo Go melalui Google Play Store.
+2. Pastikan komputer dan smartphone terhubung ke jaringan Wi-Fi yang sama.
+3. Jalankan `npx expo start --lan`.
+4. Scan QR Code menggunakan Expo Go.
+5. Tunggu proses bundling sampai aplikasi terbuka.
+
+### 7. Pengujian Aplikasi iOS
+
+**Menggunakan iOS Simulator:**
+
+1. Siapkan perangkat macOS dengan Xcode.
+2. Jalankan iOS Simulator.
+3. Pastikan backend sudah aktif.
+4. Jalankan Expo dari direktori frontend.
+5. Buka aplikasi melalui simulator.
+
+**Menggunakan Perangkat iPhone:**
+
+1. Siapkan perangkat iPhone dan lingkungan pengembangan yang kompatibel.
+2. Pastikan komputer dan iPhone terhubung ke jaringan yang sama.
+3. Jalankan Expo.
+4. Buka aplikasi melalui Expo Go atau build development yang sesuai.
+5. Uji autentikasi Apple dan navigasi Apple Maps pada perangkat yang mendukungnya.
 
 ---
 
 ## 🧪 Validasi Kualitas Kode
 
-Frontend typecheck:
+### Frontend TypeScript Check
 
-```powershell
+```bash
 cd frontend
 npx tsc --noEmit
 ```
 
-Backend syntax check:
+### Backend Syntax Check
 
-```powershell
+```bash
 cd backend
+
 node --check src/app.js
 node --check src/server.js
 node --check src/services/providerAuth.js
+```
+
+### Backend Automated Testing
+
+```bash
 npm test
 ```
 
 ---
 
-## 🔒 Keamanan
+## 🔒 Keamanan Aplikasi
 
-1. Rahasia seperti `JWT_SECRET`, private key Apple, dan client secret tidak disimpan di frontend maupun git repository.
-2. Token provider Google dan Apple selalu diverifikasi melalui library resmi di backend sebelum menerbitkan JWT aplikasi.
-3. Seluruh sesi login disimpan di enkripsi keychain/keystore native via `expo-secure-store`.
+1. Informasi rahasia seperti `JWT_SECRET`, Google credentials, dan Apple credentials tidak disimpan dalam repository publik.
+2. Verifikasi token Google dilakukan melalui backend menggunakan `google-auth-library`.
+3. Verifikasi identity token Apple dilakukan melalui backend menggunakan `apple-signin-auth`.
+4. Token aplikasi dikelola menggunakan JSON Web Token (JWT).
+5. Penyimpanan sesi pada perangkat menggunakan `expo-secure-store`.
+6. File `.env` harus dimasukkan ke `.gitignore`.
+7. Gunakan HTTPS untuk komunikasi API pada lingkungan production.
+8. Nomor WhatsApp tempat kuliner hanya ditampilkan atau digunakan sesuai data kontak yang tersedia.
+
+---
+
+## 📱 Platform Pengembangan
+
+| Komponen              | Android                              | iOS                         |
+| --------------------- | ------------------------------------ | --------------------------- |
+| Aplikasi Mobile       | React Native                         | React Native                |
+| Development Framework | Expo                                 | Expo                        |
+| Google Sign-In        | Didukung                             | Didukung                    |
+| Apple Sign-In         | Melalui web OAuth jika dikonfigurasi | Native Apple Authentication |
+| Map Navigation        | Google Maps                          | Apple Maps                  |
+| WhatsApp Integration  | WhatsApp Click to Chat               | WhatsApp Click to Chat      |
+| Backend               | Node.js + Express.js                 | Node.js + Express.js        |
+| UI/UX Design          | Figma                                | Figma                       |
+| API Communication     | REST API                             | REST API                    |
+
+Ejakmakan dikembangkan sebagai aplikasi mobile lintas platform menggunakan React Native dan Expo. Beberapa integrasi disesuaikan dengan sistem operasi perangkat, terutama autentikasi Apple dan layanan navigasi peta.
+
+---
+
+## 🔗 Repository & Referensi
+
+- **GitHub Repository:** [Ejakmakan App](https://github.com/rezajauhari555-code/ejakmakanapp)
+- **Figma Design:** [Ejakmakan – Figma Design](https://www.figma.com/design/QfoxA3XmtHH776m97ERqD9/Untitled?node-id=0-1\&t=veKPYPreFjZqLaem-0)
+
+---
+
+\<p align="center">
+&#x20; \<b>🍽️ Ejakmakan – Explore Your Taste, Discover Your Place.\</b>
+\</p>
